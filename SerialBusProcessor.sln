@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialBusProcessor", "SerialBusProcessor\SerialBusProcessor.csproj", "{AEAA38BF-A432-4818-A570-14CEEF4FE02C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{6741EEFC-61D4-4B73-8D98-C0E3DDA169BE}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "vb_test", "vb_test\vb_test.vbproj", "{45D1F603-623D-4A23-ACE3-B41B9A895F8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{AEAA38BF-A432-4818-A570-14CEEF4FE02C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEAA38BF-A432-4818-A570-14CEEF4FE02C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEAA38BF-A432-4818-A570-14CEEF4FE02C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6741EEFC-61D4-4B73-8D98-C0E3DDA169BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6741EEFC-61D4-4B73-8D98-C0E3DDA169BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6741EEFC-61D4-4B73-8D98-C0E3DDA169BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6741EEFC-61D4-4B73-8D98-C0E3DDA169BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45D1F603-623D-4A23-ACE3-B41B9A895F8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45D1F603-623D-4A23-ACE3-B41B9A895F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45D1F603-623D-4A23-ACE3-B41B9A895F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45D1F603-623D-4A23-ACE3-B41B9A895F8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
