@@ -53,12 +53,16 @@ namespace SerialBusProcessor
         /// <summary>
         /// 获取总线上设备的连入顺序
         /// </summary>
-        public byte[] DeviceOder { get { return deviceorder; } }
+        public byte[] DeviceOrder { get { return deviceorder; } }
         /// <summary>
         /// 获取是否已经找到总线设备
         /// </summary>
         public bool FindDevice { get { return finddevice; } }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="datastream">传输数据的字节流</param>
+        /// <param name="length">字节流长度</param>
         private void Write_Transferbuffer(byte[] datastream, int length)
         {
             if (scomm == null || scomm.IsOpen == false)
@@ -504,6 +508,7 @@ namespace SerialBusProcessor
                                 /* 系统命令通道直接调用内部响应函数 */
                                 OnSerialCommandArrival(channel, cmd, pkt_length - 6);
                             }
+                            cmd.Initialize();
                         }
                     }
                 }
@@ -691,35 +696,8 @@ namespace SerialBusProcessor
                 // send isp_reboot command
                 Send_Command(deviceorder[deviceIdx], rst, 2);
                 Thread.Sleep(500);
-                //k = 2;
-                //while (k > 0)
-                //{
-                //    Thread.Sleep(100);
-                //    k--;
-                //}
-                //if (!ispwait)
-                //    return 1;
                 Console.WriteLine("Target module reboot");
             }
-
-            //for (int i = 0; i < deviceIdx; i++)
-            //{
-            //    ispwaithandle.Reset();
-            //    ispwait = false;
-            //    Send_Command(deviceorder[i], cmd, 2);
-            //    k = 2;
-            //    Thread.Sleep(500);
-            //    //while (k > 0)
-            //    //{
-            //    //    Thread.Sleep(100);
-            //    //    k--;
-            //    //}
-            //    //if (!ispwait)
-            //    //    return 0 - (1 + i);
-            //    Console.WriteLine("front module directly link");
-            //}
-
-
             return 0;
         }
         private bool isp_write(byte[] buff, int count)

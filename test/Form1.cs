@@ -17,6 +17,7 @@ namespace test
         EventWaitHandle[] cmdwait;
         HWCommandAnalyzer analyzer;
         byte flag = 0;
+        byte resp = 0;
         public Form1()
         {
             testthreads = new Thread[100];
@@ -49,8 +50,9 @@ namespace test
         int iii = 0;
         private void Analyzer_PowersupplyConfigResponse_Received(HWCommandAnalyzer dca, int index)
         {
-            Console.WriteLine( string.Format("power config resp{0}",iii++));
-            flag = 0x0e;
+            Console.WriteLine(string.Format("power config resp{0}", iii++));
+            resp = 1;
+
         }
 
         private void Analyzer_SingleQuiryPowersupplyResponse_Received(HWCommandAnalyzer dca, int index)
@@ -105,7 +107,7 @@ namespace test
             printf += "\n";
             analyzer.Analyzer(ch,command,length);
             flag |=(byte)(1 << (ch - 5)); ;
-            Console.WriteLine(printf);
+            //Console.WriteLine(printf);
 
 
         }
@@ -215,25 +217,53 @@ namespace test
         private async void button4_Click(object sender, EventArgs e)
         {
             byte[] ar;
-            ar = analyzer.RxConfigMode(RxMode.BPP, 0);
+            byte[] arr;
+
+            //ar = analyzer.RxConfigMode(RxMode.BPP, 0);
             //sbp.Send_Data(1, ar, ar.Length);
+            ar = analyzer.SingleQuiryPowersupply(PowersupplyChannel.Channel2);
+            arr = analyzer.PowersupplyConfig(PowersupplyChannel.Channel2, PowerMode.Adapter_QC);
             //Thread.Sleep(2000);
             //ar = analyzer.SingleQuiryPowersupply(PowersupplyChannel.Channel3);
             int i = 0;
-            for (; i <100; i++)
+            for (; i <10; i++)
             {
-                for (int j = 5; j < 10; j++)
+                for (int j = 5; j < 6; j++)
                 {
-                    sbp.Send_Data(j, ar, ar.Length);
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("Send:");
-                    foreach (var b in ar)
+                    sbp.Send_Data(1, arr, arr.Length);
+                    await Task.Run(new Action(() =>
                     {
-                        sb.Append(b.ToString("X02"));
-                    }
-                    richTextBox1.Text += sb.ToString() + '\n';
+                        DateTime start = DateTime.Now;
+
+                        while (resp == 0)
+                        {
+                            if ((DateTime.Now - start).TotalMilliseconds > 500)
+                                break;
+                        }
+                        resp = 0;
+                    }));
+                    DateTime s = DateTime.Now;
+                    while ((DateTime.Now - s).TotalMilliseconds < 1000) ;
+                    sbp.Send_Data(1, ar, ar.Length);
+                    //StringBuilder sb = new StringBuilder();
+                    //sb.Append("Send:");
+                    //foreach (var b in ar)
+                    //{
+                    //    sb.Append(b.ToString("X02"));
+                    //}
+                    //richTextBox1.Text += sb.ToString() + '\n';
                 }
-                await Task.Run(new Action(() => { while (flag != 0x1f) ; flag = 0; }));
+                await Task.Run(new Action(() => 
+                {
+                    DateTime start = DateTime.Now;
+
+                    while (flag != 0x0e)
+                    {
+                        if ((DateTime.Now - start).TotalMilliseconds > 500)
+                            break;
+                    }
+                    flag = 0;
+                }));
                 Console.WriteLine(string.Format("count:{0}\n", i));
             }
         }

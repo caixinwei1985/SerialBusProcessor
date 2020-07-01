@@ -8,7 +8,7 @@ using System.Text;
 namespace SerialBusProcessor
 {
     public enum LoadChannel : byte { Channel1 = 1, Channel2, Channel3, Channel4, Channel5 };
-    public enum PowersupplyChannel : byte { Channel1 = 1, Channel2, Channel3, Channel4, Channel5 };
+    public enum PowersupplyChannel : byte { Channel1 = 1, Channel2, Channel3, Channel4, Channel5,ChannelAll = 0xff };
     public enum RxMode : byte { BPP = 0, SFC, AFC, EPP };
     public enum PowerMode : byte { None = 0, Adapter_PD, Onboard_PD, Adapter_QC, Onboard_QC, Adpter_PQQC, Onboard_PQQC, Fixed };
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -489,7 +489,10 @@ namespace SerialBusProcessor
             byte[] ar = null;
             UInt16 crc;
             PowersupplyConfigCmd cmd = new PowersupplyConfigCmd();
-            InitHeader(typeof(PowersupplyConfigCmd), (CmdHeader)cmd, 0x01, TYPE_POWER, (UInt16)targetId);
+            byte ctrlcode = 0x01;
+            if (PowersupplyChannel.ChannelAll == ch)
+                ctrlcode = 0xff;
+            InitHeader(typeof(PowersupplyConfigCmd), (CmdHeader)cmd, ctrlcode, TYPE_POWER, (UInt16)targetId);
             cmd.mode = (byte)mode;
             cmd.channel = (byte)ch;
             cmd.Vset_h = (byte)(vset >> 8);
@@ -686,6 +689,10 @@ namespace SerialBusProcessor
                 if (crc != data[count - 2] * 256 + data[count - 1])
                 {
                     Console.WriteLine("device frame error......................................");
+                    for(int i = 0;i<count;i++)
+                    {
+                        Console.Write(data[i].ToString("X2")+" ");
+                    }
                     return;
                 }
             }
@@ -779,7 +786,7 @@ namespace SerialBusProcessor
                     }
                     break;
                 case TYPE_POWER:
-                    if (data[9] == 0x01)
+                    if (data[9] == 0x01 || data[9] == 0xfe)
                     {
                         _powersupplyConfigResp = Array2Struct<PowersupplyConfigResp>(data);
                         PowersupplyConfigResponse_Received?.Invoke(this, index);
